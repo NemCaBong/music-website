@@ -8,5 +8,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
   });
   console.log(topics);
   // mặc định res.render đang trong view
-  res.render("client/pages/topics/index");
+  res.render("client/pages/topics/index", {
+    pageTitle: "Chủ đề bài hát",
+  });
 };
