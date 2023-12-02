@@ -11,6 +11,10 @@ database.connect();
 const app: Express = express();
 const port: number | string = process.env.PORT || 3000;
 
+// cấu hình file tĩnh (folder public)
+app.use(express.static(`${__dirname}/public`));
+// end cấu trúc file tĩnh
+
 // using pug
 app.set("views", "./views");
 app.set("view engine", "pug");
