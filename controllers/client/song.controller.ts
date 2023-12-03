@@ -17,8 +17,6 @@ export const list = async (req: Request, res: Response) => {
       deleted: false,
     }).select("title avatar singerId like createdAt slug");
 
-    console.log(songs);
-
     for (const song of songs) {
       const singerInfo = await Singer.findOne({
         _id: song.singerId,
@@ -30,6 +28,41 @@ export const list = async (req: Request, res: Response) => {
     res.render("client/pages/songs/list", {
       pageTitle: "Danh sách bài hát",
       songs: songs,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.redirect("back");
+  }
+};
+
+// [GET] /songs/detail/:slugSong
+export const detail = async (req: Request, res: Response) => {
+  try {
+    const slugSong = req.params.slugSong;
+
+    const song = await Song.findOne({
+      deleted: false,
+      status: "active",
+      slug: slugSong,
+    });
+
+    const singer = await Singer.findOne({
+      _id: song.singerId,
+      status: "active",
+      deleted: false,
+    }).select("fullName");
+
+    const topic = await Topic.findOne({
+      _id: song.topicId,
+      status: "active",
+      deleted: false,
+    }).select("title");
+
+    res.render("client/pages/songs/detail", {
+      pageTitle: song.title,
+      song: song,
+      singer: singer,
+      topic: topic,
     });
   } catch (error) {
     console.log(error.message);

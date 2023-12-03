@@ -5,4 +5,7 @@ const router: Router = Router();
 // [GET] /songs/:slugTopic
 router.get("/:slugTopic", controller.list);
 
+// [GET] /songs/detail/:slugSong
+router.get("/detail/:slugSong", controller.detail);
+
 export const songRoutes: Router = router;
