@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Topic from "../../models/topic.model";
 import Song from "../../models/song.model";
 import Singer from "../../models/singer.model";
+import { type } from "os";
 
 // [GET] /songs/:slugTopic
 export const list = async (req: Request, res: Response) => {
@@ -67,5 +68,42 @@ export const detail = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error.message);
     res.redirect("back");
+  }
+};
+
+// Đoạn này viết theo kiểu API nên sẽ trả về 1 JSON
+// [PATCH] /songs/like/:typeLike/:idSong
+export const like = async (req: Request, res: Response) => {
+  try {
+    const typeLike: string = req.params.typeLike;
+
+    const id: string = req.params.idSong;
+
+    const song = await Song.findOne({
+      _id: id,
+      deleted: false,
+      status: "active",
+    });
+
+    const newLike = typeLike === "like" ? song.like + 1 : song.like - 1;
+    await Song.updateOne(
+      {
+        _id: id,
+      },
+      {
+        like: newLike,
+      }
+    );
+
+    res.json({
+      code: 200,
+      message: "Thành công",
+      like: newLike,
+    });
+  } catch (error) {
+    res.json({
+      code: 500,
+      message: "Lỗi " + error.message,
+    });
   }
 };
