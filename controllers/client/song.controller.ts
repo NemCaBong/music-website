@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Topic from "../../models/topic.model";
 import Song from "../../models/song.model";
 import Singer from "../../models/singer.model";
+import FavoriteSong from "../../models/favorite-songs.model";
 import { type } from "os";
 
 // [GET] /songs/:slugTopic
@@ -59,6 +60,13 @@ export const detail = async (req: Request, res: Response) => {
       deleted: false,
     }).select("title");
 
+    const isFavorite = await FavoriteSong.findOne({
+      // userId: "",
+      songId: song.id,
+    });
+
+    song["isFavorite"] = isFavorite ? true : false;
+
     res.render("client/pages/songs/detail", {
       pageTitle: song.title,
       song: song,
@@ -106,4 +114,41 @@ export const like = async (req: Request, res: Response) => {
       message: "Lỗi " + error.message,
     });
   }
+};
+
+// [PATCH] /songs/favorite/:typeFavorite/:idSong
+export const favorite = async (req: Request, res: Response) => {
+  const idSong: string = req.params.idSong;
+  const typeFavorite: string = req.params.typeFavorite;
+
+  switch (typeFavorite) {
+    case "favorite":
+      const existFavSong = await FavoriteSong.findOne({
+        songId: idSong,
+      });
+
+      if (!existFavSong) {
+        // tạo mới
+        const favSong = new FavoriteSong({
+          // về sau có login thì thêm userId vào
+          songId: idSong,
+        });
+        await favSong.save();
+      }
+      break;
+    case "unfavorite":
+      // vì bài hát ythich ko quá qtrong
+      // nên cta xóa luôn ko rác db
+      await FavoriteSong.deleteOne({
+        songId: idSong,
+      });
+      break;
+    default:
+      break;
+  }
+
+  res.json({
+    code: 200,
+    result: "Ok",
+  });
 };
