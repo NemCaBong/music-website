@@ -15,4 +15,5 @@ router.patch("/like/:typeLike/:idSong", controller.like);
 
 // [PATCH] /songs/favorite/:typeFavorite/:idSong
 router.patch("/favorite/:typeFavorite/:idSong", controller.favorite);
+
 export const songRoutes: Router = router;
