@@ -15,6 +15,10 @@ const songSchema = new mongoose.Schema(
     audio: String,
     status: String,
     slug: String,
+    listen: {
+      type: Number,
+      default: 0,
+    },
     deleted: {
       default: false,
       type: Boolean,
