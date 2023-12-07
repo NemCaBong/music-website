@@ -95,3 +95,50 @@ if (listFavoriteButton.length > 0) {
   });
 }
 // END Favorite BUTTON
+
+// SEARCH SUGGESTION
+const boxSearch = document.querySelector(".box-search");
+if (boxSearch) {
+  // lấy ra ô input trong search box
+  const input = boxSearch.querySelector(`input[name="keyword"]`);
+  const innerSuggest = boxSearch.querySelector(".inner-suggest");
+
+  // mỗi lần nhấc phím lên
+  input.addEventListener("keyup", () => {
+    const keyword = input.value;
+
+    // link fetchAPI
+    const link = `/search/suggest?keyword=${keyword}`;
+    fetch(link)
+      .then((res) => res.json())
+      .then((data) => {
+        // nếu lấy thành công
+        if (data && data.code === 200) {
+          const songs = data.songs;
+          const htmls = songs.map((song) => {
+            return `
+                <a class="inner-item" href="/songs/detail/${song.slug}">
+                  <div class="inner-image">
+                    <img src="${song.avatar}" />
+                  </div>
+                  <div class="inner-info">
+                      <div class="inner-title">${song.title}</div>
+                      <div class="inner-singer">
+                        <i class="fa-solid fa-microphone-lines"></i> ${song.infoSinger.fullName}
+                      </div>
+                  </div>
+                </a>
+              `;
+          });
+          const innerList = boxSearch.querySelector(".inner-list");
+          // dùng join vì nó đang là 1 array.
+          innerList.innerHTML = htmls.join("");
+          // thêm class show để hiển thị
+          innerSuggest.classList.add("show");
+        } else {
+          innerSuggest.classList.remove("show");
+        }
+      });
+  });
+}
+// END SEARCH SUGGESTION
