@@ -5,6 +5,7 @@ import clientRoutes from "./routes/client/index.route";
 import adminRoutes from "./routes/admin/index.route";
 import { systemConfig } from "./config/system";
 import path from "path";
+import bodyParser from "body-parser";
 dotenv.config();
 
 database.connect();
@@ -12,6 +13,12 @@ database.connect();
 // Khi dùng import thì app sẽ có kiểu là Express
 const app: Express = express();
 const port: number | string = process.env.PORT || 3000;
+
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  })
+);
 
 // cấu hình file tĩnh (folder public)
 app.use(express.static(`${__dirname}/public`));
