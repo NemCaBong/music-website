@@ -65,6 +65,7 @@ export const createPost = async (req: Request, res: Response) => {
       status: req.body.status,
       avatar: avatar,
       audio: audio,
+      lyrics: req.body.lyrics,
     };
     // không truyền req.body luôn vào db
     const song = new Song(dataSong);
@@ -81,4 +82,68 @@ export const createPost = async (req: Request, res: Response) => {
   // trước khi chạy vào controller
   // thì chúng ta phải cho nó chạy qua multer để thư viện nó phân tích
   // rồi req.body mới chứa data được.
+};
+
+// [GET] /admin/songs/edit/:id
+export const edit = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    const song = await Song.findOne({
+      _id: id,
+      deleted: false,
+    });
+
+    const topics = await Topic.find({
+      deleted: false,
+    }).select("title");
+
+    const singers = await Singer.find({
+      deleted: false,
+    }).select("fullName");
+
+    res.render("admin/pages/songs/edit", {
+      pageTitle: "Chỉnh sửa bài hát",
+      song: song,
+      topics: topics,
+      singers: singers,
+    });
+  } catch (error) {
+    console.log(error);
+    res.redirect("back");
+  }
+};
+
+// [PATCH] /admin/songs/edit/:id
+export const editPatch = async (req: Request, res: Response) => {
+  try {
+    const id: string = req.params.id;
+
+    const dataSong: {} = {
+      title: req.body.title,
+      topicId: req.body.topicId,
+      singerId: req.body.singerId,
+      description: req.body.description,
+      status: req.body.status,
+      lyrics: req.body.lyrics,
+    };
+    if (req.body.avatar) {
+      dataSong["avatar"] = req.body.avatar[0];
+    }
+
+    if (req.body.audio) {
+      dataSong["audio"] = req.body.audio[0];
+    }
+
+    await Song.updateOne(
+      {
+        _id: id,
+      },
+      dataSong
+    );
+    res.redirect("back");
+  } catch (error) {
+    console.log(error);
+    res.redirect(`${systemConfig.prefixAdmin}/songs`);
+  }
 };

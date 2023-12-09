@@ -6,6 +6,8 @@ import adminRoutes from "./routes/admin/index.route";
 import { systemConfig } from "./config/system";
 import path from "path";
 import bodyParser from "body-parser";
+import methodOverride from "method-override";
+
 dotenv.config();
 
 database.connect();
@@ -19,6 +21,7 @@ app.use(
     extended: false,
   })
 );
+app.use(methodOverride("_method"));
 
 // cấu hình file tĩnh (folder public)
 app.use(express.static(`${__dirname}/public`));
