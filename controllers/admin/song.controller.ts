@@ -45,6 +45,17 @@ export const create = async (req: Request, res: Response) => {
 
 // [POST] /admin/songs/create
 export const createPost = async (req: Request, res: Response) => {
+  let avatar = "";
+  let audio = "";
+
+  if (req.body.avatar) {
+    avatar = req.body.avatar[0];
+  }
+
+  if (req.body.audio) {
+    audio = req.body.audio[0];
+  }
+
   try {
     const dataSong = {
       title: req.body.title,
@@ -52,7 +63,8 @@ export const createPost = async (req: Request, res: Response) => {
       singerId: req.body.singerId,
       description: req.body.description,
       status: req.body.status,
-      avatar: req.body.avatar,
+      avatar: avatar,
+      audio: audio,
     };
     // không truyền req.body luôn vào db
     const song = new Song(dataSong);
