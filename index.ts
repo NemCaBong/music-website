@@ -28,7 +28,7 @@ app.use(express.static(`${__dirname}/public`));
 // end cấu trúc file tĩnh
 
 // using pug
-app.set("views", `${__dirname}./views`);
+app.set("views", `${__dirname}/views`);
 app.set("view engine", "pug");
 // end using pug
 
