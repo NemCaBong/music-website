@@ -16,11 +16,7 @@ database.connect();
 const app: Express = express();
 const port: number | string = process.env.PORT || 3000;
 
-app.use(
-  bodyParser.urlencoded({
-    extended: false,
-  })
-);
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 
 // cấu hình file tĩnh (folder public)
